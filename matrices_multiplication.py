@@ -1,5 +1,6 @@
 import pyopencl as cl
 import numpy as np
+from misc import create_some_context
 from time import time
 
 import os
@@ -8,22 +9,11 @@ os.environ['PYOPENCL_CTX'] = '1'
 
 (n, m, p) = (3, 4, 5)
 
-# a = np.random.randn(n, m).astype(np.float32)
-# b = np.random.randn(m, p).astype(np.float32)
-a = np.random.randint(2, size=(n*m))
-b = np.random.randint(2, size=(m*p))
+a = np.random.randint(2, size=(n*m)).astype(np.float32)
+b = np.random.randint(2, size=(m*p)).astype(np.float32)
 c = np.zeros((n*p), dtype=np.float32)
 
-a = a.astype(np.float32)
-b = b.astype(np.float32)
-
-platform = cl.get_platforms()
-print(platform)
-my_gpu_devices = platform[0].get_devices(device_type=cl.device_type.GPU)
-print(my_gpu_devices) 
-ctx = cl.Context(devices=my_gpu_devices)
-
-#ctx = cl.create_some_context()
+ctx = create_some_context()
 queue = cl.CommandQueue(ctx)
 
 mf = cl.mem_flags
