@@ -1,6 +1,6 @@
 import pyopencl as cl
 import numpy as np
-from misc import create_some_context
+from misc import create_some_context, load_cl_text
 from time import time
 
 import os
@@ -22,24 +22,7 @@ a_buf = cl.Buffer\
 b_buf = cl.Buffer\
    (ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=b)
 c_buf = cl.Buffer(ctx, mf.WRITE_ONLY, c.nbytes)
-prg = cl.Program(ctx, """
-    __kernel void multiply(ushort n,
-    ushort m, ushort p, __global float *a,
-    __global float *b, __global float *c)
-    {
-      int gid = get_global_id(0);
-      c[gid] = 0.0f;
-      int rowC = gid/p;
-      int colC = gid%p;
-      __global float *pA = &a[rowC*m];
-      __global float *pB = &b[colC];
-      for(int k=0; k<m; k++)
-      {
-         pB = &b[colC+k*p];
-         c[gid] += (*(pA++))*(*pB);
-      }
-    }
-    """).build()
+prg = cl.Program(ctx, load_cl_text("multiply_matr.cl")).build()
 st = time()
 prg.multiply(queue, c.shape, None,
              np.uint16(n), np.uint16(m), np.uint16(p),

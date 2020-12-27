@@ -1,4 +1,5 @@
 import pyopencl as cl
+from os.path import dirname, join
 
 
 def create_some_context():
@@ -15,3 +16,8 @@ def create_some_context():
     print("Devices:", ", ".join(i.name for i in devices)) 
     ctx = cl.Context(devices=devices)
     return ctx
+
+
+def load_cl_text(fname):
+    with open(join(dirname(__file__), fname)) as fp:
+        return fp.read()
