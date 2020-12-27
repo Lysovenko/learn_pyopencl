@@ -3,9 +3,6 @@ import numpy as np
 from misc import create_some_context, load_cl_text
 from time import time
 
-import os
-os.environ['PYOPENCL_COMPILER_OUTPUT'] = '1'
-os.environ['PYOPENCL_CTX'] = '1'
 
 (n, m, p) = (3, 4, 5)
 
@@ -17,10 +14,8 @@ ctx = create_some_context()
 queue = cl.CommandQueue(ctx)
 
 mf = cl.mem_flags
-a_buf = cl.Buffer\
-   (ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=a)
-b_buf = cl.Buffer\
-   (ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=b)
+a_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=a)
+b_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=b)
 c_buf = cl.Buffer(ctx, mf.WRITE_ONLY, c.nbytes)
 prg = cl.Program(ctx, load_cl_text("multiply_matr.cl")).build()
 st = time()
