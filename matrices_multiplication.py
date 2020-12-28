@@ -1,10 +1,17 @@
 import pyopencl as cl
 import numpy as np
 from misc import create_some_context, load_cl_text
-from time import perf_counter
+from sys import argv
+try:
+    from time import process_time as perf_counter
+except ImportError:
+    from time import perf_counter
 
 
-(n, m, p) = (3, 4, 5)
+try:
+    n, m, p = map(int, argv[1:])
+except ValueError:
+    (n, m, p) = (3, 4, 5)
 
 a = np.random.randint(2, size=(n*m)).astype(np.float32)
 b = np.random.randint(2, size=(m*p)).astype(np.float32)

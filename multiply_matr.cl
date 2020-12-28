@@ -14,4 +14,5 @@ multiply (ushort n,
       pB = &b[colC + k * p];
       c[gid] += (*(pA++)) * (*pB);
     }
+  printf("%d:\tr %d;\tc %d\t%d\n", gid, rowC, colC, get_local_id(0));
 }
