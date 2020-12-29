@@ -13,7 +13,7 @@ def create_some_context():
         devices = platform[0].get_devices(device_type=cl.device_type.CPU)
     if not devices:
         raise RuntimeError("No OpenCL devices found")
-    print("Devices:", ", ".join(i.name for i in devices)) 
+    print("Devices:", ", ".join(i.name for i in devices))
     ctx = cl.Context(devices=devices)
     return ctx
 
