@@ -19,7 +19,6 @@ b = random.randint(2, size=(m * p)).astype(float32)
 c = zeros((n * p), dtype=float32)
 TIMES = {}
 ctx = create_some_context()
-queue = CommandQueue(ctx)
 
 a_buf = Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=a)
 b_buf = Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=b)
@@ -28,15 +27,18 @@ pt = perf_counter()
 prg = Program(ctx, load_cl_text("multiply_matr.cl")).build()
 TIMES["Compilation"] = perf_counter() - pt
 pt = perf_counter()
-prg.multiply(queue, c.shape, None,
-             uint16(n), uint16(m), uint16(p),
-             a_buf, b_buf, c_buf)
-TIMES["Execution"] = perf_counter() - pt
-a_mul_b = empty_like(c)
-pt = perf_counter()
-enqueue_copy(queue, a_mul_b, c_buf)
-TIMES["Copying"] = perf_counter() - pt
-
+with CommandQueue(ctx) as queue:
+    prg.multiply(queue, c.shape, None,
+                 uint16(n), uint16(m), uint16(p),
+                 a_buf, b_buf, c_buf)
+    TIMES["Execution"] = perf_counter() - pt
+    a_mul_b = empty_like(c)
+    pt = perf_counter()
+    enqueue_copy(queue, a_mul_b, c_buf)
+    TIMES["Copying"] = perf_counter() - pt
+a_buf.release()
+b_buf.release()
+c_buf.release()
 print("matrix A:")
 print(a.reshape(n, m))
 print("matrix B:")
