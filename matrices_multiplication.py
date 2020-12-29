@@ -1,6 +1,6 @@
 from pyopencl import (CommandQueue, mem_flags as mf, Buffer, Program,
                       enqueue_copy)
-from numpy import random, zeros, float32, uint16, empty_like
+from numpy import random, zeros, float32, uint16
 from misc import create_some_context, load_cl_text
 from sys import argv
 try:
@@ -32,9 +32,8 @@ with CommandQueue(ctx) as queue:
                  uint16(n), uint16(m), uint16(p),
                  a_buf, b_buf, c_buf)
     TIMES["Execution"] = perf_counter() - pt
-    a_mul_b = empty_like(c)
     pt = perf_counter()
-    enqueue_copy(queue, a_mul_b, c_buf)
+    enqueue_copy(queue, c, c_buf)
     TIMES["Copying"] = perf_counter() - pt
 a_buf.release()
 b_buf.release()
@@ -44,5 +43,5 @@ print(a.reshape(n, m))
 print("matrix B:")
 print(b.reshape(m, p))
 print("multiplied A*B:")
-print(a_mul_b.reshape(n, p))
+print(c.reshape(n, p))
 print("\n".join("%s:\t%g" % i for i in TIMES.items()))
