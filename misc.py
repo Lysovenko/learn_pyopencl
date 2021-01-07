@@ -33,9 +33,10 @@ def lena():
     return lena
 
 
-def show_img(img):
+def show_img(img, colored=False):
     import matplotlib.pyplot as plt
-    plt.gray()
+    if not colored:
+        plt.gray()
     plt.imshow(img)
     plt.show()
 
