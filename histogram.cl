@@ -24,5 +24,6 @@ parts of local histogram */
   barrier (CLK_LOCAL_MEM_FENCE);
 /* Write the local histogram out to the global one */
   for (int i = lid; i < HIST_BINS; i += get_local_size (0))
-    atomic_add (&histogram[i], localHistogram[i]);
+    if (localHistogram[i])	// Do not do atomic_add if nothing to add
+      atomic_add (&histogram[i], localHistogram[i]);
 }
