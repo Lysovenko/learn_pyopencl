@@ -19,9 +19,7 @@ convolution (read_only image2d_t src, write_only image2d_t dest,
 	{
 	  coords.x = column + j;
 	  float4 pixel = read_imagef (src, sampler, coords);
-	  sum.x += pixel.x * filter[filter_id];
-	  sum.y += pixel.y * filter[filter_id];
-	  sum.z += pixel.z * filter[filter_id++];
+	  sum += pixel * filter[filter_id++];
 	}
     }
   write_imagef (dest, (int2) (column, row), sum);
