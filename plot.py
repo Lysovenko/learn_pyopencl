@@ -88,7 +88,8 @@ class PlotWindow(QMainWindow):
         self.interactor = None
         examples = self.mbar.addMenu("Examples")
         examples.addAction(QAction("Rotate", self, triggered=self._set_rotate))
-        examples.addAction(QAction("Mandelbrot", self, triggered=print))
+        examples.addAction(QAction("Mandelbrot", self,
+                                   triggered=self._set_mandelbrot))
         self.draw({"img": lena()})
 
     def closeEvent(self, event):
@@ -97,6 +98,11 @@ class PlotWindow(QMainWindow):
     def _set_rotate(self, *args):
         from rotation import Interactor
         self.interactor = Interactor()
+
+    def _set_mandelbrot(self, *args):
+        from mandelbrot import Interactor
+        self.interactor = Interactor()
+        self.draw(self.interactor())
 
     def draw(self, plt):
         self.canvas.draw(plt)
