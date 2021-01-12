@@ -85,19 +85,26 @@ class PlotWindow(QMainWindow):
         self.addToolBar(self.toolbar)
         self.setCentralWidget(self.canvas)
         self.mbar = self.menuBar()
+        self.interactor = None
         examples = self.mbar.addMenu("Examples")
-        examples.addAction(QAction("Rotate", self, triggered=print))
+        examples.addAction(QAction("Rotate", self, triggered=self._set_rotate))
         examples.addAction(QAction("Mandelbrot", self, triggered=print))
         self.draw({"img": lena()})
 
     def closeEvent(self, event):
         """finalize"""
 
+    def _set_rotate(self, *args):
+        from rotation import Interactor
+        self.interactor = Interactor()
+
     def draw(self, plt):
         self.canvas.draw(plt)
 
     def interact(self, action):
-        print(action)
+        if self.interactor is None:
+            return print(action)
+        self.draw(self.interactor(action))
 
     def keyPressEvent(self, event):
         key = event.key()
