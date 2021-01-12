@@ -70,7 +70,8 @@ class Canvas(FigureCanvas):
                 cmap = 'gray'
             else:
                 cmap = None
-            self.axes1.imshow(dset["img"], cmap=cmap)
+            self.axes1.imshow(dset["img"], cmap=cmap,
+                              extent=dset.get("extent"))
         super().draw()
 
 

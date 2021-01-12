@@ -64,8 +64,11 @@ class Interactor:
             self.dy *= 4. / 3.
             self.x0 += self.w / 2. * (dx1 - self.dx)
             self.y0 += self.h / 2. * (self.dy - dy1)
+        extent = (self.x0, self.x0 + self.w * self.dx,
+                  self.y0 - self.h * self.dy, self.y0)
         return {"img": find_set(self.x0, self.y0, self.dx, self.dy,
-                                *self.params)[:, :, :3]}
+                                *self.params)[:, :, :3],
+                "extent": extent}
 
     def __del__(self):
         self.buf.release()
